@@ -2,13 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>照片蓋章 – 9 張印章 Demo</title>
+  <title>照片蓋章 – 可調印章大小</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-
   <style>
-    /* ================================
-       1. Material Design 3 風格變數
-       ================================ */
     :root {
       --md3-color-primary: #6200EE;
       --md3-color-on-primary: #ffffff;
@@ -16,11 +12,9 @@
       --md3-color-on-surface: #1C1B1F;
       --md3-color-surface-variant: #F3EDF7;
       --md3-color-outline: #79747E;
-
       --md3-shape-corner: 12px;
       --md3-elevation: 0 1px 2px rgba(0,0,0,0.15);
       --md3-elevation-high: 0 4px 8px rgba(0,0,0,0.2);
-
       --md3-font-size-title: 1.25rem;
       --md3-font-size-body: 1rem;
     }
@@ -28,16 +22,14 @@
       box-sizing: border-box;
     }
     body {
-      margin: 0; 
-      padding: 0;
+      margin: 0; padding: 0;
       font-family: "Roboto", sans-serif;
       background: var(--md3-color-surface);
       color: var(--md3-color-on-surface);
       line-height: 1.5;
     }
-    h1, h2, h3 { margin: 0; }
+    h1,h2,h3 { margin: 0; }
 
-    /* App Bar */
     .app-bar {
       background: var(--md3-color-primary);
       color: var(--md3-color-on-primary);
@@ -46,19 +38,13 @@
       box-shadow: var(--md3-elevation);
     }
     .app-bar h1 {
-      font-size: 1.5rem;
-      margin: 0;
+      font-size: 1.5rem; margin: 0;
     }
 
-    /* 主要容器 */
     .container {
-      width: 100%; 
-      max-width: 600px; 
-      margin: 0 auto; 
-      padding: 16px;
+      width: 100%; max-width: 600px; margin: 0 auto; padding: 16px;
     }
 
-    /* 說明卡 */
     .description {
       background: var(--md3-color-surface-variant);
       padding: 12px;
@@ -68,7 +54,6 @@
       font-size: var(--md3-font-size-body);
     }
 
-    /* 按鈕 */
     .btn {
       background: var(--md3-color-primary);
       color: var(--md3-color-on-primary);
@@ -85,7 +70,6 @@
       background: #4B00C3;
     }
 
-    /* 上傳檔案按鈕 + label */
     .file-input-label {
       display: inline-block;
       background: var(--md3-color-primary);
@@ -101,19 +85,14 @@
       background: #4B00C3;
     }
     .file-input-label input {
-      display: none; /* 隱藏原生 file input */
+      display: none;
     }
 
-    /* 印章清單 */
     .stamp-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 10px 0;
+      display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0;
     }
     .stamp-list img {
-      width: 60px; 
-      height: 60px;
+      width: 60px; height: 60px;
       border-radius: var(--md3-shape-corner);
       border: 2px solid transparent;
       cursor: pointer;
@@ -127,7 +106,6 @@
       border: 2px solid var(--md3-color-primary);
     }
 
-    /* Canvas 區 */
     #photoCanvas {
       display: block;
       margin-top: 12px;
@@ -138,46 +116,53 @@
       border-radius: var(--md3-shape-corner);
     }
 
-    /* 浮動按鈕(FAB) */
     .fab {
-      position: fixed;
-      bottom: 24px; 
-      right: 24px;
-      width: 56px; 
-      height: 56px;
-      border-radius: 28px;
+      position: fixed; bottom: 24px; right: 24px;
+      width: 56px; height: 56px; border-radius: 28px;
       background-color: var(--md3-color-primary);
       color: var(--md3-color-on-primary);
-      display: flex; 
-      align-items: center; 
-      justify-content: center;
-      font-size: 24px;
-      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; cursor: pointer;
       box-shadow: var(--md3-elevation-high);
+    }
+
+    /* Range slider 讓使用者調整印章大小 */
+    .slider-container {
+      margin: 8px 0;
+      display: flex; align-items: center;
+      gap: 8px;
+    }
+    #stampSize {
+      flex: 1;
     }
   </style>
 </head>
 <body>
-  <!-- App Bar -->
   <div class="app-bar">
-    <h1>照片蓋章 – 9 張印章 Demo</h1>
+    <h1>照片蓋章 – 調整印章大小</h1>
   </div>
 
   <div class="container">
     <div class="description">
-      <p>1) 選擇(或拍攝)一張照片。2) 點選任一印章，之後在照片上點擊即可蓋章。3) 若失誤可按「上一步」移除最後蓋章。4) 完成後按「下載圖片」。</p>
-      <p>若出現「tainted canvas」錯誤，請確保這些圖片與本網頁同域 (已放在同個 GitHub Repo 下的 <code>images/</code>)。</p>
+      <p>1) 選擇/拍攝照片。2) 選印章 + 調整大小。3) 點擊照片蓋章。4) 「上一步」可移除最後印章。5) 完成後「下載圖片」。若出現跨域錯誤請確認印章圖片與頁面同源。</p>
     </div>
 
-    <!-- 上傳檔案按鈕 -->
-    <label class="file-input-label">
-      選擇照片
-      <input type="file" accept="image/*" id="photoInput">
-    </label>
-    <button class="btn" id="undoBtn">上一步</button>
-    <button class="btn" id="downloadBtn">下載圖片</button>
+    <div style="margin-bottom:10px;">
+      <label class="file-input-label">
+        選擇照片
+        <input type="file" accept="image/*" id="photoInput">
+      </label>
+      <button class="btn" id="undoBtn">上一步</button>
+      <button class="btn" id="downloadBtn">下載圖片</button>
+    </div>
 
-    <!-- 9 張印章 (來自 images/ 資料夾) -->
+    <!-- Range slider for stamp scale -->
+    <div class="slider-container">
+      <label for="stampSize">印章大小</label>
+      <input type="range" id="stampSize" min="0.5" max="2" step="0.1" value="1">
+    </div>
+
+    <!-- 9 張印章, 皆放在同 Repo /images/ 資料夾 -->
     <div class="stamp-list" id="stampList">
       <img src="images/Ikspiari.png" alt="Ikspiari">
       <img src="images/TokyoDisney.png" alt="TokyoDisney">
@@ -190,12 +175,10 @@
       <img src="images/OMO5TokyoOtsuka.png" alt="OMO5TokyoOtsuka">
     </div>
 
-    <!-- Canvas -->
     <canvas id="photoCanvas" width="600" height="400"></canvas>
   </div>
 
-  <!-- FAB 回頂端 -->
-  <div class="fab" onclick="scrollToTop()">
+  <div class="fab" onclick="window.scrollTo({ top: 0, behavior:'smooth' });">
     ↑
   </div>
 
@@ -203,16 +186,18 @@
     const photoCanvas = document.getElementById('photoCanvas');
     const ctx = photoCanvas.getContext('2d');
 
-    let baseImage = null;   // 使用者上傳的照片
-    let stampsData = [];    // [{ stampImg, x, y }, ...]
-    let currentStampImg = null; // 當前選擇的印章
+    let baseImage = null;
+    let stampsData = [];  // [{ stampImg, x, y, scale }, ...]
+    let currentStampImg = null;
+    let stampScale = 1.0; // 目前印章縮放
 
     const photoInput = document.getElementById('photoInput');
     const undoBtn = document.getElementById('undoBtn');
     const downloadBtn = document.getElementById('downloadBtn');
     const stampListEl = document.getElementById('stampList');
+    const stampSizeInput = document.getElementById('stampSize');
 
-    // 1) 選擇檔案
+    // 1) 上傳照片
     photoInput.addEventListener('change', e => {
       const file = e.target.files[0];
       if (!file) return;
@@ -230,24 +215,24 @@
       reader.readAsDataURL(file);
     });
 
-    // 2) 印章清單點擊
+    // 2) 選印章
     stampListEl.addEventListener('click', e => {
       if (e.target.tagName.toLowerCase() === 'img') {
-        // 清除所有 selected
+        // 取消所有 selected
         Array.from(stampListEl.querySelectorAll('img')).forEach(img => {
           img.classList.remove('selected');
         });
         e.target.classList.add('selected');
 
-        // 設為當前印章
-        const stampImg = new Image();
-        stampImg.crossOrigin = 'anonymous';
-        stampImg.src = e.target.src;
-        currentStampImg = stampImg;
+        // 建立一個新的 Image
+        let sImg = new Image();
+        sImg.crossOrigin = 'anonymous';
+        sImg.src = e.target.src;
+        currentStampImg = sImg;
       }
     });
 
-    // 3) 在 Canvas 上點擊 => 蓋章
+    // 3) Canvas 點擊 => 蓋章
     photoCanvas.addEventListener('click', evt => {
       if (!baseImage) {
         alert('請先上傳照片');
@@ -258,18 +243,22 @@
         return;
       }
 
-      // 修正座標 (canvas 實際大小 vs 顯示大小)
       const rect = photoCanvas.getBoundingClientRect();
       const scaleX = photoCanvas.width / rect.width;
       const scaleY = photoCanvas.height / rect.height;
       const mouseX = (evt.clientX - rect.left) * scaleX;
       const mouseY = (evt.clientY - rect.top) * scaleY;
 
-      stampsData.push({ stampImg: currentStampImg, x: mouseX, y: mouseY });
+      stampsData.push({
+        stampImg: currentStampImg,
+        x: mouseX,
+        y: mouseY,
+        scale: stampScale
+      });
       redrawCanvas();
     });
 
-    // 4) 上一步 => 移除最後蓋印章
+    // 4) 上一步
     undoBtn.addEventListener('click', () => {
       if (stampsData.length > 0) {
         stampsData.pop();
@@ -293,22 +282,22 @@
       }
     });
 
+    // 調整印章大小
+    stampSizeInput.addEventListener('input', e => {
+      stampScale = parseFloat(e.target.value);
+    });
+
     // 重繪
     function redrawCanvas() {
-      ctx.clearRect(0,0, photoCanvas.width, photoCanvas.height);
+      ctx.clearRect(0,0,photoCanvas.width, photoCanvas.height);
       if (baseImage) {
         ctx.drawImage(baseImage, 0, 0, photoCanvas.width, photoCanvas.height);
       }
       stampsData.forEach(stamp => {
-        const w = stamp.stampImg.width;
-        const h = stamp.stampImg.height;
-        ctx.drawImage(stamp.stampImg, stamp.x - w/2, stamp.y - h/2);
+        const w = stamp.stampImg.width * stamp.scale;
+        const h = stamp.stampImg.height * stamp.scale;
+        ctx.drawImage(stamp.stampImg, stamp.x - w/2, stamp.y - h/2, w, h);
       });
-    }
-
-    // 浮動按鈕 => 回頂端
-    function scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   </script>
 </body>
